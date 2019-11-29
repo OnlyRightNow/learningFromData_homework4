@@ -112,7 +112,7 @@ class Agent:
         Args:
             state: str, as "[0, 0]", "[0, 1]", etc.
         Outputs:
-            action: an action the agenet decides to take, in [0, 1, 2, 3].
+            action: an action the agent decides to take, in [0, 1, 2, 3].
         """
 
         """Please Fill Your Code Here.
@@ -126,6 +126,15 @@ class Agent:
             possible_actions.remove(3)
         if '3' in state.split(',')[1]:
             possible_actions.remove(1)
+
+        if self.eps >= np.random.random():
+            action_index = np.random.randint(0, np.size(possible_actions) - 1)
+            action = possible_actions[action_index]
+        else:
+            Q_state = self.Q[state]
+            action_index = max(Q_state)
+            action = possible_actions[action_index]
+
 
         return action
 
@@ -143,6 +152,8 @@ class Agent:
 
         """Please Fill Your Code Here.
         """
+        Q_state = np.random.rand(4)
+        self.Q[state] = Q_state
 
         return
 
