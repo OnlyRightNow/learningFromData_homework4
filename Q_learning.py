@@ -132,9 +132,7 @@ class Agent:
             action = possible_actions[action_index]
         else:
             Q_state = self.Q[state]
-            action_index = max(Q_state)
-            action = possible_actions[action_index]
-
+            action = np.argmax(Q_state)
 
         return action
 
@@ -152,7 +150,11 @@ class Agent:
 
         """Please Fill Your Code Here.
         """
-        Q_state = np.random.rand(4)
+
+        Q_state = self.Q[state]
+        Q_state_action = Q_state[action]
+        Q_state_action = (1-self.alpha)*Q_state_action + self.alpha*(reward + self.gamma*np.argmax(self.Q[next_state]))
+        Q_state[action] = Q_state_action
         self.Q[state] = Q_state
 
         return
