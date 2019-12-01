@@ -159,6 +159,29 @@ class Agent:
 
         return
 
+    def getQtable(self):
+        return self.Q
+
+
+
+def calculateValueDistribution(Qtable):
+    reward_table = np.zeros((4, 4))
+    reward_table[3, 3] = 4
+    reward_table[3, 0] = 2
+    reward_table[[0, 0, 2], [3, 1, 1]] = 1
+    reward_table[[1, 1, 3], [3, 1, 1]] = -5
+
+    avg_reward = np.zeros((4, 4))
+    for entry in Qtable:
+        x = entry.split(',')[0]
+        x = x.strip('[')
+        y = entry.split(',')[1]
+        y = y.strip(']')
+        avg_reward[int(x)][int(y)] = np.average(Qtable[entry])
+
+    mse = np.square(avg_reward - reward_table).mean()
+    print('Mean Square Error is: ', mse)
+    return
 
 if __name__ == "__main__":
 
@@ -230,6 +253,8 @@ if __name__ == "__main__":
         epoch += 1
 
         if done:
+            Qtable = smart_mouse.getQtable()
+            calculateValueDistribution(Qtable)
             plt.title(datetime.datetime.now().ctime())
             plt.savefig("1.png")
             print("***" * 10)
