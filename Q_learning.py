@@ -118,21 +118,31 @@ class Agent:
         """Please Fill Your Code Here.
         """
         possible_actions = self.action_space.copy()
-        if '0' in state.split(',')[0]:
+        # if '0' in state.split(',')[0]:
+        #     possible_actions.remove(2)
+        # if '0' in state.split(',')[1]:
+        #     possible_actions.remove(0)
+        # if '3' in state.split(',')[0]:
+        #     possible_actions.remove(3)
+        # if '3' in state.split(',')[1]:
+        #     possible_actions.remove(1)
+        if int(state[1]) == 0:
             possible_actions.remove(2)
-        if '0' in state.split(',')[1]:
+        if int(state[4]) == 0:
             possible_actions.remove(0)
-        if '3' in state.split(',')[0]:
+        if int(state[1]) == self.max_row:
             possible_actions.remove(3)
-        if '3' in state.split(',')[1]:
+        if int(state[4]) == self.max_col:
             possible_actions.remove(1)
 
         if self.eps >= np.random.random():
-            action_index = np.random.randint(0, np.size(possible_actions) - 1)
-            action = possible_actions[action_index]
+            action = np.random.choice(possible_actions)
         else:
             Q_state = self.Q[state]
             action = np.argmax(Q_state)
+            while action not in possible_actions:
+                Q_state[action] = 0
+                action = np.argmax(Q_state)
 
         return action
 
@@ -153,7 +163,7 @@ class Agent:
 
         Q_state = self.Q[state]
         Q_state_action = Q_state[action]
-        Q_state_action = (1-self.alpha)*Q_state_action + self.alpha*(reward + self.gamma*np.argmax(self.Q[next_state]))
+        Q_state_action = (1-self.alpha)*Q_state_action + self.alpha*(reward + self.gamma*self.Q[state][np.argmax(self.Q[next_state])])
         Q_state[action] = Q_state_action
         self.Q[state] = Q_state
 
