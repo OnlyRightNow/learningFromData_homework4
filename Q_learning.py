@@ -135,7 +135,7 @@ class Agent:
         if int(state[4]) == self.max_col:
             possible_actions.remove(1)
 
-        if self.eps >= np.random.random():
+        if self.eps > np.random.random():
             action = np.random.choice(possible_actions)
         else:
             Q_state = self.Q[state]
@@ -163,7 +163,7 @@ class Agent:
 
         Q_state = self.Q[state]
         Q_state_action = Q_state[action]
-        Q_state_action = (1-self.alpha)*Q_state_action + self.alpha*(reward + self.gamma*self.Q[state][np.argmax(self.Q[next_state])])
+        Q_state_action = (1-self.alpha)*Q_state_action + self.alpha*(reward + self.gamma*self.Q[next_state][np.argmax(self.Q[next_state])])
         Q_state[action] = Q_state_action
         self.Q[state] = Q_state
 
